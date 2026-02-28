@@ -1,0 +1,39 @@
+============================================================
+ADMIN PANEL SEED DATA
+============================================================
+
+ADMIN ACCOUNT:
+  Username: admin
+  Email: admin@example.com
+  Password: Admin@1234
+  ID: 697084379f6753c4adfa86fa
+
+DEMO USER ACCOUNTS:
+  1. Alice Johnson
+     Username: alice_demo
+     Email: alice@example.com
+     Password: Demo@1234
+     ID: 697084379f6753c4adfa8711
+  2. Bob Smith
+     Username: bob_demo
+     Email: bob@example.com
+     Password: Demo@1234
+     ID: 697084379f6753c4adfa8719
+  3. Carol Davis
+     Username: carol_demo
+     Email: carol@example.com
+     Password: Demo@1234
+     ID: 697084379f6753c4adfa8720
+
+ADMIN PANEL ACCESS:
+  URL: http://localhost:5173 (or your admin panel URL)
+  Login with admin credentials above
+
+API ENDPOINTS:
+  Dashboard Stats: GET /api/admin/dashboard/stats
+  Users List: GET /api/admin/users
+  Posts List: GET /api/admin/posts
+  Reports: GET /api/admin/reports
+  Activities: GET /api/admin/activities/recent
+
+============================================================

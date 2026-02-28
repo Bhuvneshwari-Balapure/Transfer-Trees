@@ -1,0 +1,51 @@
+# 🔐 ADMIN LOGIN CREDENTIALS - QUICK REFERENCE
+
+## Admin Account
+```
+Email:    admin@example.com
+Username: admin
+Password: Admin@1234
+Role:     admin
+Status:   Active ✅
+ID:       697084379f6753c4adfa86fa
+```
+
+## URLs
+```
+Admin Panel:    http://localhost:5173
+Backend API:    http://localhost:5000
+API Login:      POST /api/auth/login
+Admin Stats:    GET /api/admin/dashboard/stats
+Admin Users:    GET /api/admin/users
+Admin Reports:  GET /api/admin/reports
+```
+
+## Demo Users
+```
+Alice Johnson  | alice_demo    | alice@example.com    | Demo@1234
+Bob Smith      | bob_demo      | bob@example.com      | Demo@1234
+Carol Davis    | carol_demo    | carol@example.com    | Demo@1234
+```
+
+## Start Commands
+```bash
+# Terminal 1 - Backend
+cd trees-backend-main && npm run dev
+
+# Terminal 2 - Admin Panel  
+cd trees-admin-main && npm run dev
+```
+
+## Login Steps
+1. Go to http://localhost:5173
+2. Enter: admin / Admin@1234
+3. Click Login
+4. Access admin dashboard
+
+## Verify Setup
+```bash
+node scripts/verify-admin.js
+```
+
+---
+**Ready to login and manage the platform! 🚀**
