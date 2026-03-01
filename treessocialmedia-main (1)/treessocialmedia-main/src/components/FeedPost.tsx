@@ -41,7 +41,7 @@ interface Post {
   image?: string;
   video?: string;
   media?: string;
-  mediaType?: 'image' | 'video';
+  mediaType?: "image" | "video";
   timestamp: string;
   likes: number;
   comments: number;
@@ -222,7 +222,7 @@ export const FeedPost = ({ post, onReport }: FeedPostProps) => {
   const handleCommentLike = (commentId: string) => {
     // Placeholder for comment-like API (not implemented yet)
     setComments((prev) =>
-      prev.map((c) => (c.id === commentId ? { ...c, likes: c.likes + 1 } : c))
+      prev.map((c) => (c.id === commentId ? { ...c, likes: c.likes + 1 } : c)),
     );
   };
 
@@ -277,7 +277,9 @@ export const FeedPost = ({ post, onReport }: FeedPostProps) => {
                   </Badge>
                 )}
               </div>
-              <span className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors truncate">
+              {/* <span className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors truncate"> */}
+              <span className="text-sm text-muted-foreground cursor-pointer hover:text-primary transition-colors break-words">
+                {" "}
                 @{post.user.username} • {post.timestamp}
               </span>
             </div>
@@ -302,12 +304,17 @@ export const FeedPost = ({ post, onReport }: FeedPostProps) => {
           </DropdownMenu>
         </div>
 
-        <p className="mb-3">{post.content}</p>
+        {/* <p className="mb-3">{post.content}</p> */}
+        <p className="mb-3 break-words break-all whitespace-pre-wrap max-w-full">
+          {post.content}
+        </p>
 
         {/* Render media (image or video) */}
         {(post.image || post.video || post.media) && (
           <div className="mb-3 rounded-lg overflow-hidden relative">
-            {(post.mediaType === 'video' || post.video || (post.media && !post.image)) ? (
+            {post.mediaType === "video" ||
+            post.video ||
+            (post.media && !post.image) ? (
               <>
                 <video
                   ref={videoRef}

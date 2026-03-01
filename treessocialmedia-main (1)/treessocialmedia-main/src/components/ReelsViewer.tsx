@@ -170,6 +170,18 @@ export const ReelsViewer = () => {
       });
     }
   };
+  // useEffect(() => {
+  //   const handleWheel = (e: WheelEvent) => {
+  //     if (e.deltaY > 0) {
+  //       handleScroll("down");
+  //     } else {
+  //       handleScroll("up");
+  //     }
+  //   };
+
+  //   window.addEventListener("wheel", handleWheel);
+  //   return () => window.removeEventListener("wheel", handleWheel);
+  // }, [handleScroll]);
 
   const handleScroll = (direction: "up" | "down") => {
     if (direction === "down") {
@@ -182,6 +194,16 @@ export const ReelsViewer = () => {
       setCurrentReel((i) => i - 1);
     }
   };
+
+  useEffect(() => {
+    const handleWheel = (e: WheelEvent) => {
+      if (e.deltaY > 0) handleScroll("down");
+      else handleScroll("up");
+    };
+
+    window.addEventListener("wheel", handleWheel);
+    return () => window.removeEventListener("wheel", handleWheel);
+  }, [handleScroll]);
 
   const toggleSave = async (index: number) => {
     let prev: ReelItem | undefined;
@@ -302,7 +324,7 @@ export const ReelsViewer = () => {
   return (
     <div className="relative h-screen bg-black overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0">
+      {/* <div className="absolute inset-0">
         {loading ? (
           <div className="w-full h-full flex items-center justify-center text-white/70">
             Loading reels...
@@ -323,6 +345,32 @@ export const ReelsViewer = () => {
             key={reel?.id || "reel-video"}
             src={reel?.video}
           />
+        )}
+      </div> */}
+      {/* Video Background */}
+      <div className="absolute inset-0 flex items-center justify-center bg-black">
+        {loading ? (
+          <div className="w-full h-full flex items-center justify-center text-white/70">
+            Loading reels...
+          </div>
+        ) : !reel ? (
+          <div className="w-full h-full flex items-center justify-center text-white/70">
+            No reels yet
+          </div>
+        ) : (
+          <div className="relative h-full max-h-screen aspect-[9/16]">
+            <video
+              ref={videoRef}
+              className="w-full h-full object-contain bg-black"
+              loop
+              autoPlay
+              muted={muted}
+              playsInline
+              controls={false}
+              key={reel?.id || "reel-video"}
+              src={reel?.video}
+            />
+          </div>
         )}
       </div>
 
@@ -498,7 +546,7 @@ export const ReelsViewer = () => {
                           />
                           <AvatarFallback>
                             {(c.user?.name || c.user?.username || "U").charAt(
-                              0
+                              0,
                             )}
                           </AvatarFallback>
                         </Avatar>

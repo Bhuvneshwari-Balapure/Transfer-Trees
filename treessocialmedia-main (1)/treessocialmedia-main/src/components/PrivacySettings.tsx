@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
-import { Badge } from '@/components/ui/badge';
-import { 
-  Shield, 
-  Eye, 
-  EyeOff, 
-  Users, 
-  UserCheck, 
-  MessageCircle, 
-  MapPin, 
-  Globe, 
-  Lock, 
+import React, { useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
+import {
+  Shield,
+  Eye,
+  EyeOff,
+  Users,
+  UserCheck,
+  MessageCircle,
+  MapPin,
+  Globe,
+  Lock,
   Save,
-  X
-} from 'lucide-react';
-import { toast } from '@/hooks/use-toast';
+  X,
+} from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 interface PrivacySettingsProps {
   isOpen: boolean;
@@ -56,37 +61,37 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
   isOpen,
   onClose,
   onSave,
-  currentSettings
+  currentSettings,
 }) => {
   const [settings, setSettings] = useState<PrivacySettings>(currentSettings);
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSettingChange = (key: keyof PrivacySettings, value: boolean) => {
-    setSettings(prev => ({
+    setSettings((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
   };
 
   const handleSave = async () => {
     setIsSaving(true);
-    
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       onSave(settings);
       onClose();
-      
+
       toast({
-        title: 'Privacy Settings Updated!',
-        description: 'Your privacy preferences have been saved successfully',
+        title: "Privacy Settings Updated!",
+        description: "Your privacy preferences have been saved successfully",
       });
     } catch (error) {
       toast({
-        title: 'Error',
-        description: 'Failed to update privacy settings. Please try again.',
-        variant: 'destructive'
+        title: "Error",
+        description: "Failed to update privacy settings. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsSaving(false);
@@ -104,14 +109,15 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      {/* <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto"> */}
+      <DialogContent className="w-[95vw] sm:w-[90vw] md:max-w-2xl lg:max-w-3xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Shield className="w-5 h-5" />
             Privacy Settings
           </DialogTitle>
         </DialogHeader>
-        
+
         <div className="space-y-6">
           {/* Account Privacy */}
           <div className="space-y-4">
@@ -119,7 +125,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
               <Lock className="w-5 h-5" />
               Account Privacy
             </h3>
-            
+
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
@@ -127,7 +133,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <Users className="w-5 h-5 text-primary" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Private Account</Label>
+                    <Label className="text-base font-medium">
+                      Private Account
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Only approved followers can see your posts and stories
                     </p>
@@ -135,7 +143,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.isPrivate}
-                  onCheckedChange={(value) => handleSettingChange('isPrivate', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("isPrivate", value)
+                  }
                 />
               </div>
 
@@ -145,7 +155,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <Eye className="w-5 h-5 text-green-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Show Online Status</Label>
+                    <Label className="text-base font-medium">
+                      Show Online Status
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Let others see when you're active
                     </p>
@@ -153,7 +165,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.showOnlineStatus}
-                  onCheckedChange={(value) => handleSettingChange('showOnlineStatus', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("showOnlineStatus", value)
+                  }
                 />
               </div>
             </div>
@@ -165,7 +179,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
               <MessageCircle className="w-5 h-5" />
               Communication
             </h3>
-            
+
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
@@ -173,7 +187,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <MessageCircle className="w-5 h-5 text-blue-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Allow Direct Messages</Label>
+                    <Label className="text-base font-medium">
+                      Allow Direct Messages
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Let others send you private messages
                     </p>
@@ -181,7 +197,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.allowMessages}
-                  onCheckedChange={(value) => handleSettingChange('allowMessages', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("allowMessages", value)
+                  }
                 />
               </div>
 
@@ -191,7 +209,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <UserCheck className="w-5 h-5 text-purple-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Allow Tagging</Label>
+                    <Label className="text-base font-medium">
+                      Allow Tagging
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Let others tag you in posts and comments
                     </p>
@@ -199,7 +219,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.allowTagging}
-                  onCheckedChange={(value) => handleSettingChange('allowTagging', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("allowTagging", value)
+                  }
                 />
               </div>
 
@@ -209,7 +231,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <MessageCircle className="w-5 h-5 text-orange-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Allow Mentions</Label>
+                    <Label className="text-base font-medium">
+                      Allow Mentions
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Let others mention you using @username
                     </p>
@@ -217,7 +241,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.allowMentions}
-                  onCheckedChange={(value) => handleSettingChange('allowMentions', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("allowMentions", value)
+                  }
                 />
               </div>
             </div>
@@ -229,7 +255,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
               <Globe className="w-5 h-5" />
               Profile Information
             </h3>
-            
+
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
@@ -237,7 +263,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <MapPin className="w-5 h-5 text-yellow-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Show Location</Label>
+                    <Label className="text-base font-medium">
+                      Show Location
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Display your location on your profile
                     </p>
@@ -245,7 +273,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.showLocation}
-                  onCheckedChange={(value) => handleSettingChange('showLocation', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("showLocation", value)
+                  }
                 />
               </div>
 
@@ -255,7 +285,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <Globe className="w-5 h-5 text-indigo-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Show Website</Label>
+                    <Label className="text-base font-medium">
+                      Show Website
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Display your website link on your profile
                     </p>
@@ -263,7 +295,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.showWebsite}
-                  onCheckedChange={(value) => handleSettingChange('showWebsite', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("showWebsite", value)
+                  }
                 />
               </div>
 
@@ -273,7 +307,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <MessageCircle className="w-5 h-5 text-red-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Show Phone Number</Label>
+                    <Label className="text-base font-medium">
+                      Show Phone Number
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Display your phone number on your profile
                     </p>
@@ -281,7 +317,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.showPhone}
-                  onCheckedChange={(value) => handleSettingChange('showPhone', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("showPhone", value)
+                  }
                 />
               </div>
             </div>
@@ -293,7 +331,7 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
               <Eye className="w-5 h-5" />
               Activity & Stories
             </h3>
-            
+
             <div className="space-y-4">
               <div className="flex items-center justify-between p-4 border rounded-lg">
                 <div className="flex items-center gap-3">
@@ -301,7 +339,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <Eye className="w-5 h-5 text-pink-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Show Activity Status</Label>
+                    <Label className="text-base font-medium">
+                      Show Activity Status
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Let others see when you're active on the platform
                     </p>
@@ -309,7 +349,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.showActivityStatus}
-                  onCheckedChange={(value) => handleSettingChange('showActivityStatus', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("showActivityStatus", value)
+                  }
                 />
               </div>
 
@@ -319,7 +361,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                     <Eye className="w-5 h-5 text-cyan-500" />
                   </div>
                   <div>
-                    <Label className="text-base font-medium">Allow Story Views</Label>
+                    <Label className="text-base font-medium">
+                      Allow Story Views
+                    </Label>
                     <p className="text-sm text-muted-foreground">
                       Let others see who viewed your stories
                     </p>
@@ -327,7 +371,9 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </div>
                 <Switch
                   checked={settings.allowStoryViews}
-                  onCheckedChange={(value) => handleSettingChange('allowStoryViews', value)}
+                  onCheckedChange={(value) =>
+                    handleSettingChange("allowStoryViews", value)
+                  }
                 />
               </div>
             </div>
@@ -344,19 +390,28 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
                 </Badge>
               )}
               {!settings.isPrivate && (
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
+                <Badge
+                  variant="secondary"
+                  className="bg-green-100 text-green-800"
+                >
                   <Globe className="w-3 h-3 mr-1" />
                   Public Account
                 </Badge>
               )}
               {!settings.allowMessages && (
-                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                <Badge
+                  variant="secondary"
+                  className="bg-orange-100 text-orange-800"
+                >
                   <MessageCircle className="w-3 h-3 mr-1" />
                   DMs Disabled
                 </Badge>
               )}
               {!settings.showLocation && (
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                <Badge
+                  variant="secondary"
+                  className="bg-blue-100 text-blue-800"
+                >
                   <MapPin className="w-3 h-3 mr-1" />
                   Location Hidden
                 </Badge>
@@ -365,7 +420,8 @@ export const PrivacySettings: React.FC<PrivacySettingsProps> = ({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex gap-3 pt-4">
+          {/* <div className="flex gap-3 pt-4"> */}
+          <div className="flex flex-col sm:flex-row gap-3 pt-4">
             <Button variant="outline" onClick={handleReset} className="flex-1">
               Reset to Defaults
             </Button>

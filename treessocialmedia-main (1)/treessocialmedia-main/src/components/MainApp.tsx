@@ -191,6 +191,7 @@ export const MainApp = () => {
   }, []);
 
   // Show welcome screen for a few seconds before checking auth
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowWelcomeScreen(false);
@@ -464,7 +465,8 @@ export const MainApp = () => {
     switch (activeTab) {
       case "home":
         return (
-          <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
+          // <div className="w-full max-w-2xl mx-auto px-2 sm:px-0">
+          <div className="w-full px-3 sm:px-4 md:px-6">
             <StoryBar />
             <div className="p-2 sm:p-4">
               <InfiniteScrollFeed onReport={handlePostReport} />
@@ -681,219 +683,144 @@ export const MainApp = () => {
     );
   }
 
+  // tailwind responsive added code
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-sm">
-        <div className="flex items-center space-x-3">
-          {activeTab !== "home" && (
+    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
+      {/* ================= HEADER ================= */}
+      <header className="sticky top-0 z-50 w-full bg-white border-b border-gray-200 shadow-sm">
+        <div className="h-14 sm:h-16 w-full px-3 sm:px-4 md:px-6 flex items-center justify-between">
+          {/* LEFT SIDE */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            {activeTab !== "home" && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleBackToHome}
+                className="h-8 w-8 sm:h-9 sm:w-9"
+              >
+                <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Button>
+            )}
+
+            <img
+              src="/logo.svg"
+              alt="Treesh"
+              className="w-7 h-7 sm:w-9 sm:h-9 object-contain"
+            />
+
+            <h1 className="text-lg sm:text-xl font-bold text-primary truncate">
+              Treesh
+            </h1>
+          </div>
+
+          {/* RIGHT SIDE */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            {/* CREATE */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                >
+                  <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end">
+                <DropdownMenuItem onClick={() => handleUpload("post")}>
+                  Create Post
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleUpload("story")}>
+                  Add Story
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => handleUpload("reel")}>
+                  Create Reel
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setGoLiveModalOpen(true)}>
+                  Go Live
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* NOTIFICATIONS */}
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleBackToHome}
-              className="h-9 w-9 sm:h-10 sm:w-10"
+              className="relative h-8 w-8 sm:h-9 sm:w-9"
+              onClick={() => setActiveTab("notifications")}
             >
-              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+              {notificationCount > 0 && (
+                <Badge className="absolute -top-1 -right-1 w-5 h-5 text-xs bg-primary flex justify-center items-center">
+                  {notificationCount}
+                </Badge>
+              )}
             </Button>
-          )}
-          <img
-            src="/logo.svg"
-            alt="Treesh"
-            className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-              e.currentTarget.nextElementSibling?.classList.remove("hidden");
-            }}
-          />
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full hidden overflow-hidden">
-            <img
-              src="/logo.svg"
-              alt="Treesh Logo"
-              className="w-full h-full object-cover"
-            />
+
+            {/* PROFILE - hidden on small screens */}
+
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 h-8 px-2 sm:h-9 sm:px-3"
+              onClick={() => setActiveTab("profile")}
+            >
+              <User className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Profile</span>
+            </Button>
+
+            {/* SETTINGS */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 sm:h-9 sm:w-9"
+                >
+                  <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuItem onClick={() => setActiveTab("settings")}>
+                  Settings
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout}>
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-primary font-treesh">
-            Treesh
-          </h1>
-        </div>
-
-        <div className="flex items-center space-x-1 sm:space-x-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 sm:h-10 sm:w-10"
-              >
-                <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="end">
-              <DropdownMenuItem
-                onClick={() => handleUpload("post")}
-                className="font-opensans"
-              >
-                Create Post
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleUpload("story")}
-                className="font-opensans"
-              >
-                Add Story
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => handleUpload("reel")}
-                className="font-opensans"
-              >
-                Create Reel
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setGoLiveModalOpen(true)}
-                className="font-opensans"
-              >
-                Go Live
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("subscriptions")}
-                className="font-opensans"
-              >
-                <Crown className="w-4 h-4 mr-2" />
-                Subs
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("arcade")}
-                className="font-opensans"
-              >
-                <Heart className="w-4 h-4 mr-2" />
-                Arcade
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative h-9 w-9 sm:h-10 sm:w-10"
-            onClick={() => setActiveTab("notifications")}
-          >
-            <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
-            {notificationCount > 0 && (
-              <Badge className="absolute -top-1 -right-1 w-5 h-5 text-xs bg-primary flex justify-center items-center">
-                <span>{notificationCount}</span>
-              </Badge>
-            )}
-          </Button>
-
-          <Button
-            variant="ghost"
-            className="flex items-center space-x-2 h-9 px-2 sm:h-10 sm:px-3"
-            onClick={() => setActiveTab("profile")}
-          >
-            <User className="w-4 h-4 sm:w-5 sm:h-5" />
-            <span className="hidden sm:inline font-inter">Profile</span>
-          </Button>
-
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-9 w-9 sm:h-10 sm:w-10"
-              >
-                <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem
-                onClick={() => setActiveTab("arcade")}
-                className="font-opensans"
-              >
-                <Heart className="w-4 h-4 mr-2" />
-                Arcade
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("discover-streamers")}
-                className="font-opensans"
-              >
-                <Crown className="w-4 h-4 mr-2" />
-                Discover Streamers
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("subscriptions")}
-                className="font-opensans"
-              >
-                <Crown className="w-4 h-4 mr-2" />
-                Subs
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("subscription-setup")}
-                className="font-opensans"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Subscription Setup
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("my-subscriptions")}
-                className="font-opensans"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                My Subscriptions
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("subscription-history")}
-                className="font-opensans"
-              >
-                <Gift className="w-4 h-4 mr-2" />
-                Subscription History
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("messages")}
-                className="font-opensans"
-              >
-                Messages
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setActiveTab("settings")}
-                className="font-opensans"
-              >
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="font-opensans"
-              >
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
       </header>
 
-      <div className="flex">
-        {!isMobile && (
+      {/* ================= BODY ================= */}
+      <div className="flex flex-1 w-full">
+        {/* DESKTOP SIDEBAR */}
+        <div className="hidden md:block">
           <Navigation
             activeTab={activeTab}
             onTabChange={handleTabChange}
-            className="w-64 h-screen sticky top-16"
+            className="w-64 h-screen sticky top-14"
             notificationCount={notificationCount}
           />
-        )}
+        </div>
 
-        <main className="flex-1 min-h-screen pb-20 sm:pb-0">
+        {/* MAIN CONTENT */}
+        <main className="flex-1 w-full pb-20 md:pb-6 overflow-x-hidden">
           <ErrorBoundary>{renderContent()}</ErrorBoundary>
           {activeTab === "home" && <Footer />}
         </main>
       </div>
 
-      {isMobile && (
+      {/* MOBILE NAVIGATION */}
+      <div className="md:hidden">
         <MobileNavigation
           activeTab={activeTab}
           onTabChange={handleTabChange}
           notificationCount={notificationCount}
         />
-      )}
+      </div>
 
+      {/* MODALS */}
       <UploadModal
         isOpen={uploadModalOpen}
         onClose={() => setUploadModalOpen(false)}
@@ -921,3 +848,245 @@ export const MainApp = () => {
     </div>
   );
 };
+
+// pehle vala code
+
+// return (
+//   <div className="min-h-screen bg-gray-50">
+//     <header className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-50 shadow-sm">
+//       <div className="flex items-center space-x-3">
+//         {activeTab !== "home" && (
+//           <Button
+//             variant="ghost"
+//             size="icon"
+//             onClick={handleBackToHome}
+//             className="h-9 w-9 sm:h-10 sm:w-10"
+//           >
+//             <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+//           </Button>
+//         )}
+//         <img
+//           src="/logo.svg"
+//           alt="Treesh"
+//           className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
+//           onError={(e) => {
+//             e.currentTarget.style.display = "none";
+//             e.currentTarget.nextElementSibling?.classList.remove("hidden");
+//           }}
+//         />
+//         <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full hidden overflow-hidden">
+//           <img
+//             src="/logo.svg"
+//             alt="Treesh Logo"
+//             className="w-full h-full object-cover"
+//           />
+//         </div>
+//         <h1 className="text-xl sm:text-2xl font-bold text-primary font-treesh">
+//           Treesh
+//         </h1>
+//       </div>
+
+//       <div className="flex items-center space-x-1 sm:space-x-2">
+//         <DropdownMenu>
+//           <DropdownMenuTrigger asChild>
+//             <Button
+//               variant="ghost"
+//               size="icon"
+//               className="h-9 w-9 sm:h-10 sm:w-10"
+//             >
+//               <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+//             </Button>
+//           </DropdownMenuTrigger>
+//           <DropdownMenuContent className="w-56" align="end">
+//             <DropdownMenuItem
+//               onClick={() => handleUpload("post")}
+//               className="font-opensans"
+//             >
+//               Create Post
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => handleUpload("story")}
+//               className="font-opensans"
+//             >
+//               Add Story
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => handleUpload("reel")}
+//               className="font-opensans"
+//             >
+//               Create Reel
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setGoLiveModalOpen(true)}
+//               className="font-opensans"
+//             >
+//               Go Live
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("subscriptions")}
+//               className="font-opensans"
+//             >
+//               <Crown className="w-4 h-4 mr-2" />
+//               Subs
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("arcade")}
+//               className="font-opensans"
+//             >
+//               <Heart className="w-4 h-4 mr-2" />
+//               Arcade
+//             </DropdownMenuItem>
+//           </DropdownMenuContent>
+//         </DropdownMenu>
+
+//         <Button
+//           variant="ghost"
+//           size="icon"
+//           className="relative h-9 w-9 sm:h-10 sm:w-10"
+//           onClick={() => setActiveTab("notifications")}
+//         >
+//           <Bell className="w-4 h-4 sm:w-5 sm:h-5" />
+//           {notificationCount > 0 && (
+//             <Badge className="absolute -top-1 -right-1 w-5 h-5 text-xs bg-primary flex justify-center items-center">
+//               <span>{notificationCount}</span>
+//             </Badge>
+//           )}
+//         </Button>
+
+//         <Button
+//           variant="ghost"
+//           className="flex items-center space-x-2 h-9 px-2 sm:h-10 sm:px-3"
+//           onClick={() => setActiveTab("profile")}
+//         >
+//           <User className="w-4 h-4 sm:w-5 sm:h-5" />
+//           <span className="hidden sm:inline font-inter">Profile</span>
+//         </Button>
+
+//         <DropdownMenu>
+//           <DropdownMenuTrigger asChild>
+//             <Button
+//               variant="ghost"
+//               size="icon"
+//               className="h-9 w-9 sm:h-10 sm:w-10"
+//             >
+//               <Settings className="w-4 h-4 sm:w-5 sm:h-5" />
+//             </Button>
+//           </DropdownMenuTrigger>
+//           <DropdownMenuContent align="end" className="w-56">
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("arcade")}
+//               className="font-opensans"
+//             >
+//               <Heart className="w-4 h-4 mr-2" />
+//               Arcade
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("discover-streamers")}
+//               className="font-opensans"
+//             >
+//               <Crown className="w-4 h-4 mr-2" />
+//               Discover Streamers
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("subscriptions")}
+//               className="font-opensans"
+//             >
+//               <Crown className="w-4 h-4 mr-2" />
+//               Subs
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("subscription-setup")}
+//               className="font-opensans"
+//             >
+//               <Settings className="w-4 h-4 mr-2" />
+//               Subscription Setup
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("my-subscriptions")}
+//               className="font-opensans"
+//             >
+//               <Settings className="w-4 h-4 mr-2" />
+//               My Subscriptions
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("subscription-history")}
+//               className="font-opensans"
+//             >
+//               <Gift className="w-4 h-4 mr-2" />
+//               Subscription History
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("messages")}
+//               className="font-opensans"
+//             >
+//               Messages
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={() => setActiveTab("settings")}
+//               className="font-opensans"
+//             >
+//               <Settings className="w-4 h-4 mr-2" />
+//               Settings
+//             </DropdownMenuItem>
+//             <DropdownMenuItem
+//               onClick={handleLogout}
+//               className="font-opensans"
+//             >
+//               <LogOut className="w-4 h-4 mr-2" />
+//               Logout
+//             </DropdownMenuItem>
+//           </DropdownMenuContent>
+//         </DropdownMenu>
+//       </div>
+//     </header>
+
+//     <div className="flex">
+//       {!isMobile && (
+//         <Navigation
+//           activeTab={activeTab}
+//           onTabChange={handleTabChange}
+//           className="w-64 h-screen sticky top-16"
+//           notificationCount={notificationCount}
+//         />
+//       )}
+
+//       <main className="flex-1 min-h-screen pb-20 sm:pb-0">
+//         <ErrorBoundary>{renderContent()}</ErrorBoundary>
+//         {activeTab === "home" && <Footer />}
+//       </main>
+//     </div>
+
+//     {isMobile && (
+//       <MobileNavigation
+//         activeTab={activeTab}
+//         onTabChange={handleTabChange}
+//         notificationCount={notificationCount}
+//       />
+//     )}
+
+//     <UploadModal
+//       isOpen={uploadModalOpen}
+//       onClose={() => setUploadModalOpen(false)}
+//       type={uploadType}
+//     />
+
+//     <GoLiveModal
+//       isOpen={goLiveModalOpen}
+//       onClose={() => setGoLiveModalOpen(false)}
+//     />
+
+//     <ReportModal
+//       isOpen={reportModalOpen}
+//       onClose={() => setReportModalOpen(false)}
+//       type={reportData.type}
+//       targetId={reportData.targetId}
+//       targetName={reportData.targetName}
+//     />
+
+//     <EnhancedAuthModal
+//       isOpen={isAuthOpen}
+//       onClose={() => setIsAuthOpen(false)}
+//       onLogin={handleLogin}
+//     />
+//   </div>
+// );

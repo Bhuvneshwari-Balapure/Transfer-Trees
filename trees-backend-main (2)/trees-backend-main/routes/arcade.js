@@ -158,7 +158,7 @@ router.put(
         message: "Failed to update preferences",
       });
     }
-  }
+  },
 );
 
 // Get potential matches
@@ -169,11 +169,11 @@ router.get("/matches/potential", authenticateToken, async (req, res) => {
 
     const potentialMatches = await UserInteraction.getPotentialMatches(
       req.user.id,
-      parseInt(limit) + skip
+      parseInt(limit) + skip,
     );
     const paginatedMatches = potentialMatches.slice(
       skip,
-      skip + parseInt(limit)
+      skip + parseInt(limit),
     );
 
     res.json({
@@ -235,7 +235,7 @@ router.post("/like/:userId", authenticateToken, async (req, res) => {
       req.user.id,
       userId,
       "like",
-      "matching"
+      "matching",
     );
 
     const isMatch = await interaction.checkForMatch();
@@ -296,7 +296,7 @@ router.post("/super-like/:userId", authenticateToken, async (req, res) => {
       req.user.id,
       userId,
       "super_like",
-      "matching"
+      "matching",
     );
     const isMatch = await interaction.checkForMatch();
 
@@ -347,7 +347,7 @@ router.post("/dislike/:userId", authenticateToken, async (req, res) => {
       req.user.id,
       userId,
       "dislike",
-      "matching"
+      "matching",
     );
 
     res.json({
@@ -394,7 +394,7 @@ router.post("/pass/:userId", authenticateToken, async (req, res) => {
       req.user.id,
       userId,
       "pass",
-      "matching"
+      "matching",
     );
 
     res.json({
@@ -457,7 +457,7 @@ router.get("/matches", authenticateToken, async (req, res) => {
                 partner?.name || partner?.username || "",
                 partner?.avatar || null,
                 "mutual_like",
-                0
+                0,
               );
             }
             r.isActive = true;
@@ -514,12 +514,12 @@ router.get("/interactions", authenticateToken, async (req, res) => {
 
     const interactionsRes = await UserInteraction.getUserInteractions(
       req.user.id,
-      { type, page, limit }
+      { type, page, limit },
     );
     const interactions = interactionsRes.interactions || [];
     const paginatedInteractions = interactions.slice(
       skip,
-      skip + parseInt(limit)
+      skip + parseInt(limit),
     );
 
     res.json({
@@ -645,7 +645,7 @@ router.get("/blocked", authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate(
       "blockedUsers",
-      "fullName username profileImage"
+      "fullName username profileImage",
     );
 
     res.json({
@@ -677,7 +677,7 @@ router.post("/swipes/reset", authenticateToken, async (req, res) => {
       },
       {
         $set: { isActive: false, updatedAt: new Date() },
-      }
+      },
     );
     return res.json({
       success: true,
@@ -722,7 +722,7 @@ router.post("/matches/remove/:userId", authenticateToken, async (req, res) => {
           partner?.name || partner?.username || "",
           partner?.avatar || null,
           "mutual_like",
-          0
+          0,
         );
       }
       r.isActive = true;
@@ -813,5 +813,27 @@ router.get("/relationship/:userId", authenticateToken, async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Failed to check relationship" });
+  }
+});
+
+router.post("/matches/dev/create", authenticateToken, async (req, res) => {
+  if (process.env.NODE_ENV !== "development") {
+    return res.status(403).json({
+      success: false,
+      message: "Dev route not allowed in production",
+    });
+  }
+
+  try {
+    return res.json({
+      success: true,
+      message: "Dev match created (mock)",
+    });
+  } catch (error) {
+    console.error("Dev create match error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to create dev match",
+    });
   }
 });

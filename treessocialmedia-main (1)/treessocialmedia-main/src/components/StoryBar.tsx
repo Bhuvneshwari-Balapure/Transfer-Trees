@@ -89,7 +89,7 @@ export const StoryBar = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isViewingUserStories, setIsViewingUserStories] = useState(false);
   const [selectedStoryUserId, setSelectedStoryUserId] = useState<string | null>(
-    null
+    null,
   );
   const isViewerOpenRef = useRef(false);
   useEffect(() => {
@@ -112,7 +112,7 @@ export const StoryBar = () => {
           createdAt: new Date(latest.createdAt),
           expiresAt: new Date(
             latest.expiresAt ||
-              new Date(latest.createdAt).getTime() + 24 * 60 * 60 * 1000
+              new Date(latest.createdAt).getTime() + 24 * 60 * 60 * 1000,
           ),
           views: Array.isArray(latest.views)
             ? latest.views.length
@@ -280,8 +280,8 @@ export const StoryBar = () => {
             (prevStories || []).map((st: any) =>
               (st?.id || st?._id)?.toString?.() === storyId.toString()
                 ? { ...st, likedByMe: isLiked }
-                : st
-            )
+                : st,
+            ),
           );
         } else {
           const previews = buildPreviewFromGroups(next);
@@ -292,7 +292,7 @@ export const StoryBar = () => {
     };
     window.addEventListener(
       "storyLikeToggled",
-      onStoryLikeToggled as EventListener
+      onStoryLikeToggled as EventListener,
     );
 
     return () => {
@@ -301,7 +301,7 @@ export const StoryBar = () => {
       window.removeEventListener("userFollowed", handleUserFollowed);
       window.removeEventListener(
         "storyLikeToggled",
-        onStoryLikeToggled as EventListener
+        onStoryLikeToggled as EventListener,
       );
     };
   }, []);
@@ -325,7 +325,7 @@ export const StoryBar = () => {
     })
     .sort(
       (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )[0];
 
   const handleUserStoryClick = () => {
@@ -339,7 +339,7 @@ export const StoryBar = () => {
         stickers: story.stickers || story.metadata?.stickers || [],
         createdAt: new Date(story.createdAt),
         expiresAt: new Date(
-          story.expiresAt || new Date(Date.now() + 24 * 60 * 60 * 1000)
+          story.expiresAt || new Date(Date.now() + 24 * 60 * 60 * 1000),
         ),
         views: Array.isArray(story.views)
           ? story.views.length
@@ -394,7 +394,7 @@ export const StoryBar = () => {
       if (expired.length > 0) {
         setExpiredStories((prev) => [...prev, ...expired]);
         setStories((prev) =>
-          prev.filter((story) => !expired.includes(story.id))
+          prev.filter((story) => !expired.includes(story.id)),
         );
       }
     }, 60000); // Check every minute
@@ -424,7 +424,7 @@ export const StoryBar = () => {
     const converted = group.stories
       .sort(
         (a: any, b: any) =>
-          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
       )
       .map((story: any) => ({
         id: story._id || story.id,
@@ -434,7 +434,7 @@ export const StoryBar = () => {
         createdAt: new Date(story.createdAt),
         expiresAt: new Date(
           story.expiresAt ||
-            new Date(new Date(story.createdAt).getTime() + 24 * 60 * 60 * 1000)
+            new Date(new Date(story.createdAt).getTime() + 24 * 60 * 60 * 1000),
         ),
         views: Array.isArray(story.views)
           ? story.views.length
@@ -470,7 +470,7 @@ export const StoryBar = () => {
     setCurrentStoryIndex(0);
     setIsViewingUserStories(false);
     setSelectedStoryUserId(
-      String(preview?.user?.id || group.user?._id || group.user?.id)
+      String(preview?.user?.id || group.user?._id || group.user?.id),
     );
     setShowStoryViewer(true);
   };
@@ -507,7 +507,7 @@ export const StoryBar = () => {
   const formatTimeAgo = (date: Date): string => {
     const now = new Date();
     const diffInMinutes = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60)
+      (now.getTime() - date.getTime()) / (1000 * 60),
     );
 
     if (diffInMinutes < 1) return "Just now";
@@ -545,7 +545,8 @@ export const StoryBar = () => {
                       <SegmentedRing
                         segments={Math.max(1, cnt)}
                         color={seen ? "#9ca3af" : "#ef4444"}
-                        size={64}
+                        // size={64}
+                        size={window.innerWidth < 640 ? 56 : 64}
                         strokeWidth={3}
                         gapRatio={0.06}
                       />
@@ -573,11 +574,13 @@ export const StoryBar = () => {
                 onClick={handleUserStoryClick}
                 className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-dashed border-gray-300 hover:border-primary hover:bg-primary/5 transition-colors flex items-center justify-center relative"
               >
-                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden mb-2">
+                {/* <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden mb-2"> */}
+                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden">
                   <img
                     src={authUser?.avatar || "/placeholder.svg"}
                     alt="Your profile"
-                    className="w-full h-full object-cover"
+                    // className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-center"
                   />
                 </div>
                 <div className="absolute bottom-0 right-0 w-6 h-6 bg-primary rounded-full flex items-center justify-center border-2 border-white">
@@ -649,7 +652,8 @@ export const StoryBar = () => {
                               <SegmentedRing
                                 segments={Math.max(1, count)}
                                 color={hasUnseen ? "#ef4444" : "#9ca3af"}
-                                size={64}
+                                // size={64}
+                                size={window.innerWidth < 640 ? 56 : 64}
                                 strokeWidth={3}
                                 gapRatio={0.06}
                               />

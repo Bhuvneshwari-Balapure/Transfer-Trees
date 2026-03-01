@@ -933,6 +933,8 @@ export const arcadeAPI = {
   },
 
   resetSwipes: async (): Promise<ApiResponse<{ modified: number }>> => {
+    console.log("New Console API BASE:", API_BASE_URL);
+
     const response = await fetch(`${API_BASE_URL}/arcade/swipes/reset`, {
       method: "POST",
       headers: getAuthHeaders(),

@@ -48,7 +48,10 @@ export const NotificationPage = () => {
   const [followingBack, setFollowingBack] = useState<string[]>([]); // Track follow back progress
   const [followedBack, setFollowedBack] = useState<string[]>([]); // Track who we've followed back
   const [showUnfollowConfirm, setShowUnfollowConfirm] = useState(false);
-  const [userToUnfollow, setUserToUnfollow] = useState<{id: string, name: string} | null>(null);
+  const [userToUnfollow, setUserToUnfollow] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -61,11 +64,14 @@ export const NotificationPage = () => {
         const newUnread =
           data.unreadCount ?? list.filter((n) => !n.isRead).length;
         setUnreadCount(newUnread);
-        
+
         // Check follow relationships for follow notifications
-        const followNotifications = list.filter(n => n.type === "follow" && n.sender && typeof n.sender === "object");
+        const followNotifications = list.filter(
+          (n) =>
+            n.type === "follow" && n.sender && typeof n.sender === "object",
+        );
         const alreadyFollowing: string[] = [];
-        
+
         for (const notification of followNotifications) {
           const sender = notification.sender as any;
           if (sender?._id) {
@@ -80,14 +86,14 @@ export const NotificationPage = () => {
             }
           }
         }
-        
+
         setFollowedBack(alreadyFollowing);
-        
+
         // Sync header badge with initial unread count
         window.dispatchEvent(
           new CustomEvent("treesh:notifications-set", {
             detail: { count: newUnread },
-          })
+          }),
         );
       }
       setLoading(false);
@@ -132,8 +138,8 @@ export const NotificationPage = () => {
         notifications.find((n) => n._id === id)?.isRead === false;
       setNotifications((prev) =>
         prev.map((n) =>
-          n._id === id ? ({ ...n, isRead: true } as BackendNotification) : n
-        )
+          n._id === id ? ({ ...n, isRead: true } as BackendNotification) : n,
+        ),
       );
       if (wasUnread) {
         setUnreadCount((prev) => Math.max(0, prev - 1));
@@ -141,7 +147,7 @@ export const NotificationPage = () => {
         window.dispatchEvent(
           new CustomEvent("treesh:notifications-decrement", {
             detail: { by: 1 },
-          })
+          }),
         );
       }
     }
@@ -154,7 +160,7 @@ export const NotificationPage = () => {
       setUnreadCount(0);
       // Inform app shell to reset the global unread badge
       window.dispatchEvent(
-        new CustomEvent("treesh:notifications-set", { detail: { count: 0 } })
+        new CustomEvent("treesh:notifications-set", { detail: { count: 0 } }),
       );
     }
   };
@@ -183,9 +189,9 @@ export const NotificationPage = () => {
 
   const handleFollowBack = async (senderId: string, senderName: string) => {
     if (!senderId) return;
-    
+
     setFollowingBack((prev) => [...prev, senderId]);
-    
+
     try {
       const res = await usersAPI.followUser(senderId);
       if (res.success) {
@@ -193,15 +199,16 @@ export const NotificationPage = () => {
           title: "Following back",
           description: `You are now following ${senderName}`,
         });
-        
+
         // Add to followed back list
         setFollowedBack((prev) => [...prev, senderId]);
-        
+
         // Mark the notification as read since user interacted with it
         const followNotification = notifications.find(
-          (n) => n.type === "follow" && 
-          typeof n.sender === "object" && 
-          n.sender?._id === senderId
+          (n) =>
+            n.type === "follow" &&
+            typeof n.sender === "object" &&
+            n.sender?._id === senderId,
         );
         if (followNotification) {
           await markAsRead(followNotification._id);
@@ -231,9 +238,9 @@ export const NotificationPage = () => {
 
   const handleUnfollowConfirm = async () => {
     if (!userToUnfollow) return;
-    
+
     setFollowingBack((prev) => [...prev, userToUnfollow.id]);
-    
+
     try {
       const res = await usersAPI.followUser(userToUnfollow.id); // This will unfollow since they're already following
       if (res.success) {
@@ -241,9 +248,11 @@ export const NotificationPage = () => {
           title: "Unfollowed",
           description: `You unfollowed ${userToUnfollow.name}`,
         });
-        
+
         // Remove from followed back list
-        setFollowedBack((prev) => prev.filter(id => id !== userToUnfollow.id));
+        setFollowedBack((prev) =>
+          prev.filter((id) => id !== userToUnfollow.id),
+        );
       } else {
         toast({
           title: "Error",
@@ -280,7 +289,9 @@ export const NotificationPage = () => {
         </div>
       )}
 
-      <div className="max-w-2xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      {/* <div className="max-w-2xl mx-auto px-4 py-6 sm:px-6 lg:px-8"> */}
+      <div className="w-full px-4 py-4 sm:max-w-2xl sm:mx-auto sm:py-6">
+        {" "}
         {/* Desktop Header */}
         {!isMobile && (
           <div className="mb-6">
@@ -292,7 +303,6 @@ export const NotificationPage = () => {
             </p>
           </div>
         )}
-
         {/* Notification Settings */}
         <div className="mb-6 p-4 bg-offwhite border border-gray-200 rounded-lg">
           <h3 className="text-sm font-medium text-gray-900 mb-3">
@@ -313,9 +323,9 @@ export const NotificationPage = () => {
             </div>
           </div>
         </div>
-
         <Tabs defaultValue="all" className="w-full">
-          <TabsList className="mb-4">
+          {/* <TabsList className="mb-4"> */}
+          <TabsList className="mb-4 w-full grid grid-cols-2">
             <TabsTrigger value="all">All</TabsTrigger>
             <TabsTrigger value="requests">
               Follow Requests
@@ -356,7 +366,8 @@ export const NotificationPage = () => {
                       }`}
                     >
                       <CardContent className="p-4">
-                        <div className="flex items-start space-x-3">
+                        {/* <div className="flex items-start space-x-3"> */}
+                        <div className="flex items-start gap-3 w-full">
                           <div className="flex-shrink-0">
                             <Avatar className="h-8 w-8">
                               <AvatarImage src={avatar} />
@@ -381,27 +392,40 @@ export const NotificationPage = () => {
                               <span className="text-xs text-gray-500">
                                 {time}
                               </span>
-                              <div className="flex items-center gap-2">
+                              {/* <div className="flex items-center gap-2"> */}
+                              <div className="flex flex-wrap items-center gap-2">
                                 {/* Follow Back Button for follow notifications */}
                                 {n.type === "follow" && sender?._id && (
                                   <Button
                                     size="sm"
-                                    variant={followedBack.includes(sender._id) ? "default" : "outline"}
-                                    className="h-7 px-3 text-xs"
-                                    onClick={() => 
-                                      followedBack.includes(sender._id) 
-                                        ? handleUnfollowClick(sender._id, senderName)
-                                        : handleFollowBack(sender._id, senderName)
+                                    variant={
+                                      followedBack.includes(sender._id)
+                                        ? "default"
+                                        : "outline"
                                     }
-                                    disabled={followingBack.includes(sender._id)}
-                                  >
-                                    {followingBack.includes(sender._id) ? (
-                                      followedBack.includes(sender._id) ? "Unfollowing..." : "Following..."
-                                    ) : followedBack.includes(sender._id) ? (
-                                      "Following"
-                                    ) : (
-                                      "Follow Back"
+                                    className="h-7 px-3 text-xs"
+                                    onClick={() =>
+                                      followedBack.includes(sender._id)
+                                        ? handleUnfollowClick(
+                                            sender._id,
+                                            senderName,
+                                          )
+                                        : handleFollowBack(
+                                            sender._id,
+                                            senderName,
+                                          )
+                                    }
+                                    disabled={followingBack.includes(
+                                      sender._id,
                                     )}
+                                  >
+                                    {followingBack.includes(sender._id)
+                                      ? followedBack.includes(sender._id)
+                                        ? "Unfollowing..."
+                                        : "Following..."
+                                      : followedBack.includes(sender._id)
+                                      ? "Following"
+                                      : "Follow Back"}
                                   </Button>
                                 )}
                                 {!n.isRead && (
@@ -467,7 +491,8 @@ export const NotificationPage = () => {
                             )}
                           </div>
                         </div>
-                        <div className="flex items-center gap-2">
+                        {/* <div className="flex items-center gap-2"> */}
+                        <div className="flex flex-wrap items-center gap-2">
                           <Button
                             size="sm"
                             onClick={() => acceptRequest(u._id)}
@@ -489,7 +514,6 @@ export const NotificationPage = () => {
             </div>
           </TabsContent>
         </Tabs>
-
         {/* Empty State */}
         {!loading && notifications.length === 0 && (
           <div className="text-center py-12">
@@ -510,7 +534,8 @@ export const NotificationPage = () => {
           <DialogHeader>
             <DialogTitle>Unfollow {userToUnfollow?.name}?</DialogTitle>
             <DialogDescription>
-              Are you sure you want to unfollow {userToUnfollow?.name}? You can follow them again anytime.
+              Are you sure you want to unfollow {userToUnfollow?.name}? You can
+              follow them again anytime.
             </DialogDescription>
           </DialogHeader>
           <div className="flex justify-end gap-2 mt-4">
@@ -520,16 +545,22 @@ export const NotificationPage = () => {
                 setShowUnfollowConfirm(false);
                 setUserToUnfollow(null);
               }}
-              disabled={userToUnfollow && followingBack.includes(userToUnfollow.id)}
+              disabled={
+                userToUnfollow && followingBack.includes(userToUnfollow.id)
+              }
             >
               Cancel
             </Button>
             <Button
               variant="destructive"
               onClick={handleUnfollowConfirm}
-              disabled={userToUnfollow && followingBack.includes(userToUnfollow.id)}
+              disabled={
+                userToUnfollow && followingBack.includes(userToUnfollow.id)
+              }
             >
-              {userToUnfollow && followingBack.includes(userToUnfollow.id) ? "Unfollowing..." : "Unfollow"}
+              {userToUnfollow && followingBack.includes(userToUnfollow.id)
+                ? "Unfollowing..."
+                : "Unfollow"}
             </Button>
           </div>
         </DialogContent>

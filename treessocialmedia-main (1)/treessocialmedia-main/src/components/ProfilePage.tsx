@@ -922,11 +922,46 @@ export const ProfilePage = () => {
     });
   };
 
-  const handleSharePost = (postId: string) => {
-    toast({
-      title: "Post Shared!",
-      description: "Post has been shared successfully",
-    });
+  // const handleSharePost = (postId: string) => {
+  //   toast({
+  //     title: "Post Shared!",
+  //     description: "Post has been shared successfully",
+  //   });
+  // };
+  const handleShareProfile = async () => {
+    if (!user) return;
+
+    const shareUrl = `${window.location.origin}/profile/${user.id}`;
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: user.fullName,
+          text: `Check out ${user.fullName}'s profile on Trees!`,
+          url: shareUrl,
+        });
+
+        toast({
+          title: "Profile Shared!",
+        });
+      } catch (error) {
+        console.log("Share cancelled");
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+
+        toast({
+          title: "Link Copied!",
+          description: "Profile link copied to clipboard",
+        });
+      } catch {
+        toast({
+          title: "Share failed",
+          variant: "destructive",
+        });
+      }
+    }
   };
 
   const handleCommentPost = (postId: string) => {
@@ -1135,7 +1170,7 @@ export const ProfilePage = () => {
                   Privacy
                 </Button>
 
-                <Button
+                {/* <Button
                   variant="outline"
                   size="sm"
                   className="h-8 sm:h-9 text-xs sm:text-sm px-3 sm:px-4 opacity-50 cursor-not-allowed"
@@ -1143,13 +1178,15 @@ export const ProfilePage = () => {
                 >
                   <Eye className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   View
-                </Button>
+                </Button> */}
 
                 <Button
                   variant="outline"
                   size="sm"
-                  className="h-8 sm:h-9 text-xs sm:text-sm px-3 sm:px-4 opacity-50 cursor-not-allowed"
-                  disabled
+                  // className="h-8 sm:h-9 text-xs sm:text-sm px-3 sm:px-4 opacity-50 cursor-not-allowed"
+                  // disabled
+                  className="h-8 sm:h-9 text-xs sm:text-sm px-3 sm:px-4"
+                  onClick={handleShareProfile}
                 >
                   <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
                   Share

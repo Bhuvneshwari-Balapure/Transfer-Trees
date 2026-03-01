@@ -72,6 +72,9 @@ export const ArcadePage = () => {
   const [loadingCandidates, setLoadingCandidates] = useState(false);
   const [loadedOnce, setLoadedOnce] = useState(false);
 
+
+// matches acrades list
+const [showMatchesBelow, setShowMatchesBelow] = useState(false);
   // Filters
   const [showFilters, setShowFilters] = useState(false);
   const [ageRange, setAgeRange] = useState([18, 35]);
@@ -903,7 +906,7 @@ export const ArcadePage = () => {
                 Adjust or clear filters to see more profiles.
               </p>
               <div className="flex items-center justify-center gap-2">
-                <Button variant="outline" onClick={() => setShowFilters(false)}>
+                <Button variant="outline" onClick={() => setShowFilters(false)} className="w-full sm:w-auto">
                   Hide Filters
                 </Button>
                 <Button onClick={clearFilters}>Clear Filters</Button>
@@ -931,21 +934,127 @@ export const ArcadePage = () => {
         </div>
       );
     }
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardContent className="pt-8 pb-8 text-center">
-            <Heart className="w-16 h-16 mx-auto mb-4 text-primary" />
-            <h2 className="text-2xl font-bold mb-2">No More Profiles</h2>
-            <p className="text-muted-foreground mb-4">
-              You've seen all available profiles. Check back later for new
-              matches!
-            </p>
-            <Button onClick={resetSwipeHistory}>Reset Swipe History</Button>
-          </CardContent>
-        </Card>
-      </div>
-    );
+    // return (
+    //   <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center">
+    //     <Card className="max-w-md">
+    //       <CardContent className="pt-8 pb-8 text-center">
+    //         <Heart className="w-16 h-16 mx-auto mb-4 text-primary" />
+    //         <h2 className="text-2xl font-bold mb-2">No More Profiles</h2>
+    //         <p className="text-muted-foreground mb-4">
+    //           You've seen all available profiles. Check back later for new
+    //           matches!
+    //         </p>
+    //         <Button onClick={resetSwipeHistory}>Reset Swipe History</Button>
+    //       </CardContent>
+    //     </Card>
+    //   </div>
+    // );
+return (
+  <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-start justify-center p-4">
+    <div className="w-full max-w-md space-y-4">
+
+      {/* No More Profiles Card */}
+      <Card>
+        <CardContent className="pt-8 pb-8 text-center space-y-4">
+          <Heart className="w-14 h-14 mx-auto text-primary" />
+
+          <h2 className="text-2xl font-bold">No More Profiles</h2>
+
+          <p className="text-muted-foreground">
+            You've seen all available profiles.
+          </p>
+
+          <div className="grid grid-cols-3 gap-3 mt-4">
+            <div className="bg-white p-3 rounded-lg shadow">
+              <p className="text-lg font-bold text-red-500">
+                {likedUsers.length}
+              </p>
+              <p className="text-xs text-muted-foreground">Liked</p>
+            </div>
+
+            <div className="bg-white p-3 rounded-lg shadow">
+              <p className="text-lg font-bold text-blue-500">
+                {matches.length}
+              </p>
+              <p className="text-xs text-muted-foreground">Matches</p>
+            </div>
+
+            <div className="bg-white p-3 rounded-lg shadow">
+              <p className="text-lg font-bold text-purple-500">
+                {dislikedUsers.length}
+              </p>
+              <p className="text-xs text-muted-foreground">Passed</p>
+            </div>
+          </div>
+
+          {/* <div className="flex justify-center gap-3 mt-4"> */}
+<div className="flex flex-col sm:flex-row justify-center gap-3 mt-4 w-full">
+            {/* <Button onClick={resetSwipeHistory}> */}
+<Button
+  onClick={resetSwipeHistory}
+    className="w-full sm:w-auto"
+>
+              Reset Swipe History
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => setShowMatchesBelow(true)}
+   className="w-full sm:w-auto"
+            >
+              View Matches
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* ✅ Matches List Below Card */}
+      {showMatchesBelow && (
+        <div className="h-[60vh] overflow-y-auto space-y-3">
+
+          {dedupedMatches.length === 0 ? (
+            <div className="text-center text-muted-foreground">
+              No matches found.
+            </div>
+          ) : (
+            dedupedMatches.map((match) => {
+              const u = getMatchUser(match);
+              return (
+                <Card key={u.id} className="w-full">
+                  <CardContent className="p-3 flex items-center space-x-3">
+                    <Avatar className="w-12 h-12">
+                      <AvatarImage src={u.avatar} />
+                      <AvatarFallback>
+                        {(u.name || "?").charAt(0)}
+                      </AvatarFallback>
+                    </Avatar>
+
+                    <div className="flex-1">
+                      <h4 className="font-semibold">{u.name}</h4>
+                      <p className="text-xs text-muted-foreground">
+                        {getMatchedAt(match)
+                          ? new Date(
+                              getMatchedAt(match) as string
+                            ).toLocaleDateString()
+                          : "Recently matched"}
+                      </p>
+                    </div>
+
+                    {getUnread(match) > 0 && (
+                      <Badge variant="destructive">
+                        {getUnread(match)}
+                      </Badge>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
+        </div>
+      )}
+    </div>
+  </div>
+);
   }
 
   return (
@@ -2295,4 +2404,6 @@ export const ArcadePage = () => {
       </div>
     </div>
   );
+
+
 };
