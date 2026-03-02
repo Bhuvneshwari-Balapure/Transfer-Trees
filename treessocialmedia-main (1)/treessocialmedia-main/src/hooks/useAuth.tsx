@@ -16,7 +16,7 @@ interface AuthContextType {
     options?: {
       autoMatchTarget?: string;
       autoMatchBy?: "id" | "email" | "username";
-    }
+    },
   ) => Promise<boolean>;
   logout: () => void;
   checkUsername: (username: string) => Promise<boolean>;
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const login = async (
     identifier: string,
-    password: string
+    password: string,
   ): Promise<boolean> => {
     try {
       setIsLoading(true);
@@ -73,6 +73,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.success && response.data) {
         setUser(response.data.user);
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         toast({
           title: "Success",
           description: "Login successful!",
@@ -103,7 +104,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     options?: {
       autoMatchTarget?: string;
       autoMatchBy?: "id" | "email" | "username";
-    }
+    },
   ): Promise<boolean> => {
     try {
       setIsLoading(true);
@@ -133,6 +134,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       if (response.success && response.data) {
         setUser(response.data.user);
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
         toast({
           title: "Success",
           description: "Registration successful!",
@@ -162,6 +164,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
 
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUser(null);
     toast({
       title: "Logged Out",
@@ -180,7 +183,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const getUsernameSuggestions = async (
-    baseUsername: string
+    baseUsername: string,
   ): Promise<string[]> => {
     try {
       const response = await authAPI.checkUsername(baseUsername);

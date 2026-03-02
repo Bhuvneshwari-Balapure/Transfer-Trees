@@ -30,6 +30,7 @@ import staticRoutes from "./routes/static.js";
 import matchmakingRoutes from "./routes/matchmaking.js";
 import uploadRoutes from "./routes/upload.js";
 import storiesRoutes from "./routes/stories.js";
+import paymentRoutes from "./routes/payment.js";
 
 // Import middleware
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -150,6 +151,7 @@ app.use("/api/static", staticRoutes);
 app.use("/api/admin/matchmaking", matchmakingRoutes);
 app.use("/api/uploads", uploadRoutes);
 app.use("/api/stories", storiesRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // Health check
 app.get("/health", (req, res) => {

@@ -63,6 +63,7 @@ import {
   SortDesc,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 
 // Mock data for subscription tiers
 const subscriptionTiers = [
@@ -275,6 +276,79 @@ export const SubscriptionsPage = () => {
   const [autoRenew, setAutoRenew] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popularity");
+  const { user } = useAuth();
+  const handlePayment = async (tier: any, quantity = 1) => {
+    try {
+      if (!user?._id) {
+        toast({
+          title: "Please login first",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const totalAmount = tier.price * quantity;
+
+      const res = await fetch(
+        "http://localhost:3000/api/payment/create-order",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ amount: totalAmount }),
+        },
+      );
+
+      const order = await res.json();
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Treesh",
+        description: `${tier.name} Subscription`,
+        order_id: order.id,
+
+        handler: async function (response: any) {
+          const verifyRes = await fetch(
+            "http://localhost:3000/api/payment/verify-payment",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                userId: user._id, // ✅ use context user
+                tier: tier.id,
+                price: tier.price,
+              }),
+            },
+          );
+
+          const verifyData = await verifyRes.json();
+
+          if (verifyData.success) {
+            toast({
+              title: "Payment Successful 🎉",
+              description: "Your subscription is now active.",
+            });
+          } else {
+            toast({
+              title: "Payment Verification Failed",
+              variant: "destructive",
+            });
+          }
+        },
+
+        theme: { color: "#7c3aed" },
+      };
+
+      const razor = new (window as any).Razorpay(options);
+      razor.open();
+    } catch (error) {
+      console.error("Payment error:", error);
+    }
+  };
 
   // Use mock data
   const activeSubscriptions = mockActiveSubscriptions;
@@ -334,7 +408,7 @@ export const SubscriptionsPage = () => {
   const cancelSubscription = (subscriptionId: string) => {
     if (
       confirm(
-        "Are you sure you want to cancel this subscription? You will lose access to perks at the end of the current billing period."
+        "Are you sure you want to cancel this subscription? You will lose access to perks at the end of the current billing period.",
       )
     ) {
       toast({
@@ -355,7 +429,7 @@ export const SubscriptionsPage = () => {
     (streamer) =>
       streamer.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       streamer.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      streamer.category.toLowerCase().includes(searchQuery.toLowerCase())
+      streamer.category.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const sortedStreamers = [...filteredStreamers].sort((a, b) => {
@@ -444,10 +518,17 @@ export const SubscriptionsPage = () => {
                 <p>{tier.subscribers.toLocaleString()} active subscribers</p>
                 <p>${tier.revenue.toLocaleString()} monthly revenue</p>
               </div>
-              <Button className="w-full mt-auto bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all">
+              <Button
+                onClick={() => handlePayment(tier)}
+                className="w-full mt-auto bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 text-white font-semibold"
+              >
                 <Zap className="w-4 h-4 mr-2" />
                 Buy Now
-              </Button>
+              </Button>{" "}
+              {/* <Button className="w-full mt-auto bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all">
+                <Zap className="w-4 h-4 mr-2" />
+                Buy Now
+              </Button> */}
             </CardContent>
           </Card>
         ))}
@@ -474,16 +555,23 @@ export const SubscriptionsPage = () => {
                 <tier.icon
                   className={`w-8 h-8 mx-auto mb-2 ${tier.color.replace(
                     "bg-",
-                    "text-"
+                    "text-",
                   )}`}
                 />
                 <h4 className="font-semibold">{tier.name}</h4>
                 <p className="text-2xl font-bold text-primary">${tier.price}</p>
                 <p className="text-sm text-muted-foreground">per month</p>
-                <Button className="mt-3 w-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all">
+                {/* <Button className="mt-3 w-full bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 text-white font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition-all">
                   <Zap className="w-4 h-4 mr-2" />
                   Buy Now
-                </Button>
+                </Button> */}
+                <Button
+                  onClick={() => handlePayment(tier, giftQuantity)}
+                  className="w-full mt-auto bg-gradient-to-r from-violet-600 via-fuchsia-600 to-pink-600 text-white font-semibold"
+                >
+                  <Zap className="w-4 h-4 mr-2" />
+                  Buy Now
+                </Button>{" "}
               </div>
             ))}
           </div>
@@ -585,7 +673,7 @@ export const SubscriptionsPage = () => {
                         {Math.ceil(
                           (new Date(subscription.endDate).getTime() -
                             new Date(subscription.startDate).getTime()) /
-                            (1000 * 60 * 60 * 24)
+                            (1000 * 60 * 60 * 24),
                         )}{" "}
                         days
                       </p>
@@ -782,7 +870,20 @@ export const SubscriptionsPage = () => {
                 >
                   Cancel
                 </Button>
-                <Button onClick={confirmSubscription} className="flex-1">
+                {/* <Button onClick={confirmSubscription} className="flex-1">
+                  Subscribe Now
+                </Button> */}
+                <Button
+                  className="flex-1"
+                  onClick={() => {
+                    const tier = subscriptionTiers.find(
+                      (t) => t.id === selectedTier,
+                    );
+                    if (tier) {
+                      handlePayment(tier);
+                    }
+                  }}
+                >
                   Subscribe Now
                 </Button>
               </div>
@@ -868,9 +969,16 @@ export const SubscriptionsPage = () => {
                   Cancel
                 </Button>
                 <Button
-                  onClick={confirmGiftSubscription}
                   disabled={!selectedTier}
                   className="flex-1"
+                  onClick={() => {
+                    const tier = subscriptionTiers.find(
+                      (t) => t.id === selectedTier,
+                    );
+                    if (tier) {
+                      handlePayment(tier, giftQuantity);
+                    }
+                  }}
                 >
                   Send Gift
                 </Button>
