@@ -74,13 +74,13 @@ export const UserProfilePage = ({
   const [storyIndex, setStoryIndex] = useState(0);
   const { hasSeen, markSeen } = useStorySeen();
   const [profileUnavailable, setProfileUnavailable] = useState<string | null>(
-    null
+    null,
   );
 
   const toggleSave = async (postId: string) => {
     // optimistic update
     setPosts((prev) =>
-      prev.map((p) => (p.id === postId ? { ...p, saved: !p.saved } : p))
+      prev.map((p) => (p.id === postId ? { ...p, saved: !p.saved } : p)),
     );
     try {
       const res = await postsAPI.bookmarkPost(postId);
@@ -95,7 +95,7 @@ export const UserProfilePage = ({
     } catch (e) {
       // revert on failure
       setPosts((prev) =>
-        prev.map((p) => (p.id === postId ? { ...p, saved: !p.saved } : p))
+        prev.map((p) => (p.id === postId ? { ...p, saved: !p.saved } : p)),
       );
       toast({
         title: "Error",
@@ -118,8 +118,8 @@ export const UserProfilePage = ({
                 likes: typeof likesCount === "number" ? likesCount : p.likes,
                 liked: typeof isLiked === "boolean" ? isLiked : p.liked,
               }
-            : p
-        )
+            : p,
+        ),
       );
     };
     window.addEventListener("treesh:post-updated", handler as any);
@@ -136,7 +136,7 @@ export const UserProfilePage = ({
       localStorage.setItem("startChatWithUserId", String(uid));
       // Use global navigation event consumed by MainApp
       window.dispatchEvent(
-        new CustomEvent("treesh:navigate", { detail: { tab: "messages" } })
+        new CustomEvent("treesh:navigate", { detail: { tab: "messages" } }),
       );
     } catch {
       // No-op
@@ -206,9 +206,8 @@ export const UserProfilePage = ({
           const transformedPosts: PostData[] = userPosts.map((post: any) => {
             const postType = post.type === "reel" ? "reel" : "post";
             const mediaArr = Array.isArray(post.media) ? post.media : [];
-            const firstImage = mediaArr.find(
-              (m: any) => m?.type === "image"
-            )?.url;
+            const firstImage = mediaArr.find((m: any) => m?.type === "image")
+              ?.url;
             const videoThumb =
               post.videoThumbnail ||
               mediaArr.find((m: any) => m?.type === "video")?.thumbnail;
@@ -235,7 +234,7 @@ export const UserProfilePage = ({
           });
           setPosts(transformedPosts);
         }
-      } catch (error: any) {
+      } catch (error) {
         console.error("Error fetching user posts:", error);
         const msg = error?.message || "";
         if (
@@ -291,7 +290,7 @@ export const UserProfilePage = ({
                 userId,
                 userName: user.fullName || user.username || "Unknown User",
               },
-            })
+            }),
           );
 
           // Create follow notification for the followed user
@@ -300,7 +299,7 @@ export const UserProfilePage = ({
           } catch (notificationError) {
             console.error(
               "Failed to create follow notification:",
-              notificationError
+              notificationError,
             );
             // Don't show error to user as this is not critical
           }
@@ -467,7 +466,7 @@ export const UserProfilePage = ({
             createdAt: new Date(s.createdAt || Date.now()),
             expiresAt: new Date(
               new Date(s.createdAt || Date.now()).getTime() +
-                24 * 60 * 60 * 1000
+                24 * 60 * 60 * 1000,
             ),
             user: {
               id: userId,
@@ -476,7 +475,7 @@ export const UserProfilePage = ({
               avatar: user?.avatar || "/placeholder.svg",
             },
             viewers: s.viewers || [],
-          }))
+          })),
         );
         setStoryIndex(0);
         setShowStoryViewer(true);
@@ -490,9 +489,11 @@ export const UserProfilePage = ({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto">
+      {/* <div className="max-w-4xl mx-auto"> */}
+      <div className="w-full max-w-4xl mx-auto px-0 sm:px-4">
         {/* Header */}
-        <div className="bg-white border-b px-4 py-3 sticky top-0 z-10">
+        {/* <div className="bg-white border-b px-4 py-3 sticky top-0 z-10"> */}
+        <div className="bg-white border-b px-3 sm:px-4 py-3 sticky top-0 z-20">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button variant="ghost" size="sm" onClick={onBack}>
@@ -512,13 +513,16 @@ export const UserProfilePage = ({
         </div>
 
         {/* Profile Info */}
-        <div className="bg-white px-4 py-6">
-          <div className="flex items-start gap-6">
+        {/* <div className="bg-white px-4 py-6">
+          <div className="flex items-start gap-6"> */}
+        <div className="bg-white px-4 sm:px-6 py-6">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-6">
             {/* Profile Picture with story ring if applicable */}
             <button
               type="button"
               onClick={openUserStories}
-              className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full"
+              // className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full"
+              className="relative w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 rounded-full"
               aria-label="Open stories"
             >
               <div className="absolute inset-0 -m-[2px] flex items-center justify-center pointer-events-none">
@@ -543,8 +547,11 @@ export const UserProfilePage = ({
             </button>
 
             {/* Profile Details */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-3">
+            {/* <div className="flex-1 min-w-0"> */}
+            <div className="flex-1 w-full text-center sm:text-left flex flex-col items-center sm:items-start">
+              {" "}
+              {/* <div className="flex items-center gap-3 mb-3"> */}
+              <div className="flex items-center justify-center sm:justify-start gap-3 mb-3 w-full">
                 <h2 className="text-xl font-bold">
                   {user.fullName || user.username || "Unknown User"}
                 </h2>
@@ -563,7 +570,8 @@ export const UserProfilePage = ({
                 const lastSeen = (user as any)?.lastSeen;
                 if (!showOnline && !showLastSeen) return null;
                 return (
-                  <p className="text-sm text-gray-500 mb-2">
+                  // <p className="text-sm text-gray-500 mb-2">
+                  <p className="text-sm text-gray-500 mb-2 text-center sm:text-left w-full">
                     {showOnline && isOnline
                       ? "Online"
                       : showLastSeen && lastSeen
@@ -572,9 +580,9 @@ export const UserProfilePage = ({
                   </p>
                 );
               })()}
-
               {/* Stats */}
-              <div className="flex gap-6 mb-4">
+              {/* <div className="flex gap-6 mb-4"> */}
+              <div className="flex justify-center sm:justify-start gap-6 mb-4 flex-wrap">
                 <div className="text-center">
                   <div className="font-semibold">{posts.length}</div>
                   <div className="text-sm text-gray-500">posts</div>
@@ -592,10 +600,8 @@ export const UserProfilePage = ({
                   <div className="text-sm text-gray-500">following</div>
                 </div>
               </div>
-
               {/* Bio */}
               {user.bio && <p className="text-sm mb-3">{user.bio}</p>}
-
               {/* Location and Website */}
               <div className="space-y-1">
                 {user.location && (
@@ -618,10 +624,10 @@ export const UserProfilePage = ({
                   </div>
                 )}
               </div>
-
               {/* Action Buttons */}
               {!isOwnProfile && (
-                <div className="flex gap-2 mt-4">
+                // <div className="flex gap-2 mt-4">
+                <div className="flex flex-wrap justify-center sm:justify-start gap-2 mt-4">
                   {requested ? (
                     <Button
                       onClick={handleCancelRequest}
@@ -668,7 +674,6 @@ export const UserProfilePage = ({
                   )}
                 </div>
               )}
-
               {isOwnProfile && (
                 <Button variant="outline" className="mt-4">
                   <Settings className="w-4 h-4 mr-2" />
@@ -708,7 +713,8 @@ export const UserProfilePage = ({
                   </p>
                 </div>
               ) : posts.filter((post) => post.type === "post").length > 0 ? (
-                <div className="grid grid-cols-3 gap-1">
+                // <div className="grid grid-cols-3 gap-1">
+                <div className="grid grid-cols-3 gap-[2px] sm:gap-1">
                   {posts
                     .filter((post) => post.type === "post")
                     .map((post) => (
