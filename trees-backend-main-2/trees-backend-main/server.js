@@ -87,6 +87,9 @@ const limiter = rateLimit({
 // Middleware (CORS MUST COME FIRST)
 const corsOptions = {
   origin: [
+    // "https://transfer-trees-1.onrender.com",
+    // "https://transfer-trees-1.onrender.com/api",
+    "https://transfer-trees-js3x.vercel.app",
     "https://treessocialmedia-ci5o.vercel.app",
     "https://treessocialmedia-ci5o.vercel.app/",
     "https://trees-admin-lh9z.vercel.app",
