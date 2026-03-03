@@ -469,11 +469,19 @@ router.post("/send-otp", async (req, res) => {
 
     // Send OTP via email or SMS
     if (type === "email") {
-      await sendOTPEmail(identifier, otp.code, purpose);
-    } else {
-      // SMS sending would go here (Twilio, AWS SNS, etc.)
-      await sendSMSOTP(identifier, otp.code, purpose);
+      try {
+        await sendOTPEmail(identifier, otp.code, purpose);
+      } catch (emailError) {
+        console.error("Email failed but OTP created:", emailError.message);
+      }
     }
+
+    // if (type === "email") {
+    //   await sendOTPEmail(identifier, otp.code, purpose);
+    // } else {
+    //   // SMS sending would go here (Twilio, AWS SNS, etc.)
+    //   await sendSMSOTP(identifier, otp.code, purpose);
+    // }
 
     res.json({
       message: "OTP sent successfully",
