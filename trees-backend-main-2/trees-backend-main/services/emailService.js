@@ -9,12 +9,9 @@ export const sendOTPEmail = async (to, code, purpose) => {
   try {
     await resend.emails.send({
       from: "onboarding@resend.dev",
-      to: to,
-      subject: "Your OTP Code - Trees Social",
-      html: `
-        <h2>Your OTP is: ${code}</h2>
-        <p>This code expires in 10 minutes.</p>
-      `,
+      to: "0173cs191016@gmail.com", // ← wahi email jo Resend me registered hai
+      subject: "Test OTP",
+      html: `<h2>Your OTP is: ${code}</h2>`,
     });
 
     console.log("✅ OTP email sent successfully");
