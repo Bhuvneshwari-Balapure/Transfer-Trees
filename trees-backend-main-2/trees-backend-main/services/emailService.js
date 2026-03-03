@@ -60,7 +60,9 @@ try {
   console.error("❌ Failed to create email transporter:", error.message);
 }
 
-const FROM_EMAIL = process.env.EMAIL_USER || "noreply@inventurcubes.com";
+// const FROM_EMAIL = process.env.EMAIL_USER || "noreply@inventurcubes.com";
+// const FROM_NAME = "Treesh Social";
+const FROM_EMAIL = "officialtreeshtv@gmail.com";
 const FROM_NAME = "Treesh Social";
 
 /**
